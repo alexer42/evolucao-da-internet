@@ -1,29 +1,1355 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="/styles/styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NetArch — A Evolução da Internet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Syne:wght@400;700;800&family=IBM+Plex+Mono:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --black: #0A0A08;
+    --off-white: #F2EFE5;
+    --cream: #E8E4D8;
+    --phosphor: #39FF14;
+    --phosphor-dim: #1A7A08;
+    --amber-crt: #FFB347;
+    --cyan-web2: #00D4FF;
+    --violet-web3: #8B5CF6;
+    --border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--off-white);
+    font-family: 'Syne', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ─── SCANLINES overlay ─── */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ─── NAVBAR ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 60px;
+    border-bottom: var(--border);
+    background: rgba(10,10,8,0.85);
+    backdrop-filter: blur(12px);
+  }
+
+  .nav-logo {
+    font-family: 'VT323', monospace;
+    font-size: 28px;
+    color: var(--phosphor);
+    letter-spacing: 2px;
+  }
+
+  .nav-logo span {
+    color: var(--off-white);
+    opacity: 0.5;
+    font-size: 14px;
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 4px;
+    display: block;
+    margin-top: -6px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: rgba(242,239,229,0.5);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--off-white); }
+
+  .nav-cta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    border: 1px solid rgba(57,255,20,0.4);
+    color: var(--phosphor);
+    background: transparent;
+    padding: 10px 20px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+
+  .nav-cta:hover {
+    background: rgba(57,255,20,0.08);
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 60px 80px;
+    position: relative;
+    border-bottom: var(--border);
+    overflow: hidden;
+  }
+
+  .hero-grid-bg {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      linear-gradient(rgba(57,255,20,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(57,255,20,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  .hero-grid-bg::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at 50% 60%, transparent 30%, var(--black) 75%);
+  }
+
+  .hero-year-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--phosphor-dim);
+    margin-bottom: 32px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(64px, 9vw, 128px);
+    line-height: 0.92;
+    letter-spacing: -3px;
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+  }
+
+  .hero-title .accent {
+    display: block;
+    color: var(--phosphor);
+    font-style: italic;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: clamp(72px, 10vw, 140px);
+  }
+
+  .hero-bottom {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-top: 60px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-desc {
+    max-width: 380px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: rgba(242,239,229,0.55);
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 48px;
+  }
+
+  .stat {
+    text-align: right;
+  }
+
+  .stat-num {
+    font-family: 'VT323', monospace;
+    font-size: 48px;
+    color: var(--off-white);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: rgba(242,239,229,0.35);
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* ─── SECTION HEADER ─── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 60px 60px 0;
+  }
+
+  .era-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border: 1px solid currentColor;
+  }
+
+  /* ─── ERA 1: ARPANET ─── */
+  .era-arpanet {
+    padding: 80px 60px;
+    border-bottom: var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .era-arpanet .era-tag {
+    color: var(--phosphor);
+    margin-bottom: 32px;
+    display: inline-block;
+  }
+
+  .era-year {
+    font-family: 'VT323', monospace;
+    font-size: 120px;
+    line-height: 1;
+    color: rgba(57,255,20,0.1);
+    position: absolute;
+    right: 60px;
+    top: 0;
+    pointer-events: none;
+    font-size: 200px;
+  }
+
+  .era-title {
+    font-weight: 800;
+    font-size: 48px;
+    letter-spacing: -2px;
+    line-height: 1.05;
+    margin-bottom: 20px;
+  }
+
+  .era-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: rgba(242,239,229,0.45);
+    margin-bottom: 32px;
+  }
+
+  .era-body {
+    font-size: 15px;
+    line-height: 1.75;
+    color: rgba(242,239,229,0.6);
+    max-width: 500px;
+  }
+
+  /* Terminal window */
+  .terminal {
+    background: #050f04;
+    border: 1px solid rgba(57,255,20,0.2);
+    border-radius: 0;
+    overflow: hidden;
+  }
+
+  .terminal-bar {
+    background: rgba(57,255,20,0.08);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid rgba(57,255,20,0.15);
+  }
+
+  .terminal-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: rgba(57,255,20,0.3);
+  }
+
+  .terminal-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--phosphor-dim);
+    letter-spacing: 2px;
+    margin-left: 4px;
+  }
+
+  .terminal-body {
+    padding: 24px;
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    color: var(--phosphor);
+    line-height: 1.8;
+  }
+
+  .terminal-body .prompt {
+    color: var(--phosphor-dim);
+  }
+
+  .terminal-cursor {
+    display: inline-block;
+    width: 10px;
+    height: 18px;
+    background: var(--phosphor);
+    vertical-align: middle;
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
+  /* Network nodes diagram */
+  .network-map {
+    position: relative;
+    height: 280px;
+    border: 1px solid rgba(57,255,20,0.15);
+    background: #030a03;
+    overflow: hidden;
+  }
+
+  .node {
+    position: absolute;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--phosphor);
+    box-shadow: 0 0 10px var(--phosphor), 0 0 20px rgba(57,255,20,0.3);
+  }
+
+  .node-label {
+    position: absolute;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: var(--phosphor-dim);
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+
+  .network-map svg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+  }
+
+  /* ─── MILESTONE CARDS (horizontal) ─── */
+  .milestones {
+    padding: 0 60px 80px;
+    border-bottom: var(--border);
+  }
+
+  .milestones-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: rgba(255,255,255,0.06);
+    margin-top: 40px;
+  }
+
+  .milestone-card {
+    background: var(--black);
+    padding: 32px 28px;
+    transition: background 0.3s;
+    cursor: default;
+  }
+
+  .milestone-card:hover {
+    background: rgba(57,255,20,0.03);
+  }
+
+  .milestone-year {
+    font-family: 'VT323', monospace;
+    font-size: 56px;
+    line-height: 1;
+    color: rgba(242,239,229,0.15);
+    margin-bottom: 16px;
+  }
+
+  .milestone-event {
+    font-weight: 700;
+    font-size: 17px;
+    margin-bottom: 10px;
+    letter-spacing: -0.5px;
+  }
+
+  .milestone-desc {
+    font-size: 13px;
+    color: rgba(242,239,229,0.45);
+    line-height: 1.6;
+  }
+
+  .milestone-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--phosphor);
+    margin-bottom: 20px;
+    opacity: 0.6;
+  }
+
+  /* ─── ERA 2: WEB 1.0 ─── */
+  .era-web1 {
+    padding: 80px 60px;
+    border-bottom: var(--border);
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .era-web1 .era-tag {
+    color: var(--amber-crt);
+    margin-bottom: 32px;
+    display: inline-block;
+  }
+
+  .browser-mockup {
+    background: #111;
+    border: 1px solid rgba(255,179,71,0.2);
+    overflow: hidden;
+  }
+
+  .browser-chrome {
+    background: #1a1a1a;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid rgba(255,179,71,0.1);
+  }
+
+  .browser-btn {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .browser-url {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 2px;
+    padding: 4px 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+  }
+
+  .browser-content {
+    padding: 20px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    line-height: 1.8;
+  }
+
+  .brow-h1 {
+    color: #00f;
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: underline;
+    margin-bottom: 8px;
+  }
+
+  .brow-hr {
+    border: none;
+    border-top: 2px solid #888;
+    margin: 8px 0;
+  }
+
+  .brow-link {
+    color: #00f;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .brow-img-placeholder {
+    width: 80px; height: 60px;
+    background: #ccc;
+    border: 2px solid #999;
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 12px;
+    position: relative;
+  }
+
+  .brow-img-placeholder::after {
+    content: '[IMG]';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    font-size: 9px;
+    color: #666;
+  }
+
+  /* ─── ERA 3: WEB 2.0 ─── */
+  .era-web2 {
+    padding: 80px 60px;
+    border-bottom: var(--border);
+  }
+
+  .era-web2 .era-tag {
+    color: var(--cyan-web2);
+    margin-bottom: 32px;
+    display: inline-block;
+  }
+
+  .era-web2-layout {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 80px;
+    align-items: start;
+    margin-top: 20px;
+  }
+
+  .social-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: rgba(255,255,255,0.06);
+  }
+
+  .social-post {
+    background: var(--black);
+    padding: 20px;
+  }
+
+  .social-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(0,212,255,0.15);
+    border: 1px solid rgba(0,212,255,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--cyan-web2);
+  }
+
+  .post-name {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+
+  .post-time {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: rgba(242,239,229,0.3);
+  }
+
+  .post-text {
+    font-size: 14px;
+    color: rgba(242,239,229,0.65);
+    line-height: 1.6;
+  }
+
+  .post-actions {
+    display: flex;
+    gap: 20px;
+    margin-top: 14px;
+  }
+
+  .post-action {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: rgba(242,239,229,0.3);
+    letter-spacing: 1px;
+  }
+
+  /* Feature pills */
+  .features-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-content: start;
+  }
+
+  .feature-pill {
+    border: 1px solid rgba(0,212,255,0.2);
+    padding: 20px;
+    transition: all 0.2s;
+  }
+
+  .feature-pill:hover {
+    border-color: rgba(0,212,255,0.4);
+    background: rgba(0,212,255,0.04);
+  }
+
+  .fp-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--cyan-web2);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .fp-title {
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+
+  .fp-desc {
+    font-size: 12px;
+    color: rgba(242,239,229,0.45);
+    line-height: 1.5;
+  }
+
+  /* ─── ERA 4: WEB 3.0 ─── */
+  .era-web3 {
+    padding: 80px 60px;
+    border-bottom: var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .era-web3 .era-tag {
+    color: var(--violet-web3);
+    margin-bottom: 32px;
+    display: inline-block;
+  }
+
+  .blockchain-visual {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .block {
+    border: 1px solid rgba(139,92,246,0.25);
+    padding: 16px 20px;
+    background: rgba(139,92,246,0.04);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.2s;
+  }
+
+  .block:hover {
+    background: rgba(139,92,246,0.08);
+    border-color: rgba(139,92,246,0.4);
+  }
+
+  .block-num {
+    font-family: 'VT323', monospace;
+    font-size: 32px;
+    color: rgba(139,92,246,0.4);
+    line-height: 1;
+  }
+
+  .block-data {
+    flex: 1;
+  }
+
+  .block-hash {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: rgba(139,92,246,0.6);
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+
+  .block-info {
+    font-size: 12px;
+    color: rgba(242,239,229,0.45);
+  }
+
+  .block-status {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 8px #10b981;
+  }
+
+  .block-connector {
+    width: 2px;
+    height: 12px;
+    background: rgba(139,92,246,0.2);
+    margin: 0 auto;
+    position: relative;
+    left: 19px;
+  }
+
+  /* ─── TIMELINE strip ─── */
+  .timeline-strip {
+    padding: 60px;
+    border-bottom: var(--border);
+    overflow-x: hidden;
+  }
+
+  .timeline-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: rgba(242,239,229,0.3);
+    text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+
+  .timeline-track {
+    position: relative;
+    padding-bottom: 40px;
+  }
+
+  .timeline-line {
+    position: absolute;
+    top: 6px;
+    left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg,
+      var(--phosphor) 0%,
+      var(--amber-crt) 30%,
+      var(--cyan-web2) 65%,
+      var(--violet-web3) 100%
+    );
+  }
+
+  .timeline-points {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+  }
+
+  .tp {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .tp-dot {
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    background: var(--black);
+    position: relative;
+    z-index: 1;
+  }
+
+  .tp-year {
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+  }
+
+  .tp-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    color: rgba(242,239,229,0.4);
+    text-align: center;
+    max-width: 80px;
+  }
+
+  /* ─── QUOTE section ─── */
+  .quote-section {
+    padding: 100px 60px;
+    border-bottom: var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .quote-line {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 400;
+    line-height: 1.25;
+    max-width: 900px;
+    color: var(--off-white);
+    margin-bottom: 40px;
+  }
+
+  .quote-attribution {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: rgba(242,239,229,0.3);
+    text-transform: uppercase;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding: 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+
+  .footer-brand .nav-logo {
+    font-size: 36px;
+  }
+
+  .footer-brand p {
+    margin-top: 16px;
+    font-size: 13px;
+    color: rgba(242,239,229,0.35);
+    line-height: 1.7;
+    max-width: 260px;
+  }
+
+  .footer-col-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: rgba(242,239,229,0.3);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footer-links a {
+    color: rgba(242,239,229,0.5);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--off-white); }
+
+  .footer-bottom {
+    padding: 20px 60px;
+    border-top: var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-bottom p {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: rgba(242,239,229,0.2);
+  }
+
+  /* ─── Animations ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-title { animation: fadeUp 0.8s ease both; }
+  .hero-year-tag { animation: fadeUp 0.6s ease both; }
+  .hero-desc { animation: fadeUp 1s ease both 0.2s; }
+  .hero-stats { animation: fadeUp 1s ease both 0.3s; }
+
+  /* ─── Progress bar decorative ─── */
+  .progress-bar {
+    height: 2px;
+    background: rgba(255,255,255,0.06);
+    overflow: hidden;
+    margin: 0 60px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--phosphor), var(--violet-web3));
+    width: 65%;
+  }
+</style>
 </head>
 <body>
-    <div class="cabecalho">
-        <nav>
-              NETARCH
-              <span>// ARQUIVO DIGITAL</span>
-            </div>
-            <ul class="nav-links">
-              <li><a href="#">Eras</a></li>
-              <li><a href="#">Tecnologias</a></li>
-              <li><a href="#">Linha do Tempo</a></li>
-              <li><a href="#">Sobre</a></li>
-            </ul>
-            <button class="nav-cta">Explorar →</button>
-          </nav>
-    
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-logo">
+    NETARCH
+    <span>// ARQUIVO DIGITAL</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#">Eras</a></li>
+    <li><a href="#">Tecnologias</a></li>
+    <li><a href="#">Linha do Tempo</a></li>
+    <li><a href="#">Sobre</a></li>
+  </ul>
+  <button class="nav-cta">Explorar →</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid-bg"></div>
+
+  <p class="hero-year-tag">// 1969 — 2024 — PRESENTE</p>
+
+  <h1 class="hero-title">
+    A História da<br>
+    <span class="accent">Internet</span>
+  </h1>
+
+  <div class="hero-bottom">
+    <p class="hero-desc">
+      De quatro nós de rede a bilhões de dispositivos conectados —
+      uma arqueologia digital das tecnologias que redefiniram a civilização humana.
+    </p>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">55</div>
+        <div class="stat-label">Anos de história</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">5.4B</div>
+        <div class="stat-label">Usuários hoje</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">4</div>
+        <div class="stat-label">Eras principais</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRESS -->
+<div class="progress-bar"><div class="progress-fill"></div></div>
+
+<!-- TIMELINE STRIP -->
+<section class="timeline-strip">
+  <p class="timeline-label">Linha do tempo</p>
+  <div class="timeline-track">
+    <div class="timeline-line"></div>
+    <div class="timeline-points">
+      <div class="tp" style="color: var(--phosphor)">
+        <div class="tp-dot"></div>
+        <div class="tp-year">1969</div>
+        <div class="tp-name">ARPANET</div>
+      </div>
+      <div class="tp" style="color: var(--phosphor)">
+        <div class="tp-dot"></div>
+        <div class="tp-year">1983</div>
+        <div class="tp-name">TCP/IP</div>
+      </div>
+      <div class="tp" style="color: var(--amber-crt)">
+        <div class="tp-dot"></div>
+        <div class="tp-year">1991</div>
+        <div class="tp-name">World Wide Web</div>
+      </div>
+      <div class="tp" style="color: var(--amber-crt)">
+        <div class="tp-dot"></div>
+        <div class="tp-year">1995</div>
+        <div class="tp-name">Banda Larga</div>
+      </div>
+      <div class="tp" style="color: var(--cyan-web2)">
+        <div class="tp-dot"></div>
+        <div class="tp-year">2004</div>
+        <div class="tp-name">Web 2.0</div>
+      </div>
+      <div class="tp" style="color: var(--cyan-web2)">
+        <div class="tp-dot"></div>
+        <div class="tp-year">2007</div>
+        <div class="tp-name">iPhone / Mobile</div>
+      </div>
+      <div class="tp" style="color: var(--violet-web3)">
+        <div class="tp-dot"></div>
+        <div class="tp-year">2017</div>
+        <div class="tp-name">Blockchain</div>
+      </div>
+      <div class="tp" style="color: var(--violet-web3)">
+        <div class="tp-dot"></div>
+        <div class="tp-year">2022</div>
+        <div class="tp-name">IA Generativa</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ERA 1: ARPANET -->
+<section class="era-arpanet">
+  <div>
+    <span class="era-tag">ERA 01 // 1969</span>
+    <h2 class="era-title">ARPANET<br>& as Origens</h2>
+    <p class="era-subtitle">Quando quatro computadores mudaram tudo</p>
+    <p class="era-body">
+      Em outubro de 1969, a ARPANET transmitiu sua primeira mensagem —
+      pretendia-se dizer "LOGIN", mas o sistema travou após "LO".
+      Mesmo assim, a internet havia nascido. A rede experimental do
+      Departamento de Defesa dos EUA conectava UCLA, Stanford, UC Santa
+      Barbara e a Universidade de Utah.
+    </p>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 16px;">
+    <!-- Terminal -->
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="terminal-dot"></div>
+        <div class="terminal-dot"></div>
+        <div class="terminal-dot"></div>
+        <span class="terminal-title">ARPANET NODE — UCLA 1969</span>
+      </div>
+      <div class="terminal-body">
+        <div><span class="prompt">> </span>CONNECT STANFORD.ARPANET</div>
+        <div><span class="prompt">> </span>Estabelecendo conexão...</div>
+        <div><span class="prompt">> </span>Latência: 50ms</div>
+        <div><span class="prompt">> </span>Nós ativos: 4</div>
+        <div><span class="prompt">> </span>Transmitindo: LO<span class="terminal-cursor"></span></div>
+      </div>
+    </div>
+
+    <!-- Network Map -->
+    <div class="network-map">
+      <svg viewBox="0 0 400 220">
+        <defs>
+          <marker id="dot" markerWidth="4" markerHeight="4" refX="2" refY="2">
+            <circle cx="2" cy="2" r="1.5" fill="rgba(57,255,20,0.4)"/>
+          </marker>
+        </defs>
+        <!-- connection lines -->
+        <line x1="60" y1="80" x2="200" y2="50" stroke="rgba(57,255,20,0.25)" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="60" y1="80" x2="340" y2="100" stroke="rgba(57,255,20,0.15)" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="200" y1="50" x2="340" y2="100" stroke="rgba(57,255,20,0.25)" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="200" y1="50" x2="180" y2="160" stroke="rgba(57,255,20,0.2)" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="340" y1="100" x2="180" y2="160" stroke="rgba(57,255,20,0.25)" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="60" y1="80" x2="180" y2="160" stroke="rgba(57,255,20,0.15)" stroke-width="1" stroke-dasharray="4,4"/>
+        <!-- nodes -->
+        <circle cx="60" cy="80" r="8" fill="#39FF14" style="filter: drop-shadow(0 0 6px #39FF14)"/>
+        <circle cx="200" cy="50" r="8" fill="#39FF14" style="filter: drop-shadow(0 0 6px #39FF14)"/>
+        <circle cx="340" cy="100" r="8" fill="#39FF14" style="filter: drop-shadow(0 0 6px #39FF14)"/>
+        <circle cx="180" cy="160" r="8" fill="#39FF14" style="filter: drop-shadow(0 0 6px #39FF14)"/>
+        <!-- labels -->
+        <text x="30" y="68" font-family="'IBM Plex Mono'" font-size="9" fill="#1A7A08">UCLA</text>
+        <text x="208" y="44" font-family="'IBM Plex Mono'" font-size="9" fill="#1A7A08">STANFORD</text>
+        <text x="348" y="98" font-family="'IBM Plex Mono'" font-size="9" fill="#1A7A08">UCSB</text>
+        <text x="160" y="180" font-family="'IBM Plex Mono'" font-size="9" fill="#1A7A08">UTAH</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- MILESTONES -->
+<section class="milestones">
+  <div class="section-header" style="padding: 0 0 0 0;">
+    <span class="era-tag" style="color: rgba(242,239,229,0.3)">Marcos Históricos</span>
+  </div>
+  <div class="milestones-row">
+    <div class="milestone-card">
+      <div class="milestone-dot" style="background: var(--phosphor)"></div>
+      <div class="milestone-year">1971</div>
+      <div class="milestone-event">Primeiro E-mail</div>
+      <div class="milestone-desc">Ray Tomlinson envia a primeira mensagem de e-mail entre computadores, criando o símbolo @.</div>
+    </div>
+    <div class="milestone-card">
+      <div class="milestone-dot" style="background: var(--phosphor)"></div>
+      <div class="milestone-year">1983</div>
+      <div class="milestone-event">Adoção do TCP/IP</div>
+      <div class="milestone-desc">A ARPANET adota o protocolo TCP/IP, estabelecendo a base técnica da internet moderna.</div>
+    </div>
+    <div class="milestone-card">
+      <div class="milestone-dot" style="background: var(--amber-crt)"></div>
+      <div class="milestone-year">1989</div>
+      <div class="milestone-event">Proposta da WWW</div>
+      <div class="milestone-desc">Tim Berners-Lee propõe o sistema de hipertexto que se tornaria a World Wide Web.</div>
+    </div>
+    <div class="milestone-card">
+      <div class="milestone-dot" style="background: var(--amber-crt)"></div>
+      <div class="milestone-year">1993</div>
+      <div class="milestone-event">Navegador Mosaic</div>
+      <div class="milestone-desc">O primeiro navegador gráfico torna a web acessível ao público geral pela primeira vez.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ERA 2: WEB 1.0 -->
+<section class="era-web1">
+  <div>
+    <span class="era-tag">ERA 02 // 1991–2003</span>
+    <h2 class="era-title" style="color: var(--amber-crt)">Web 1.0<br>Read-Only</h2>
+    <p class="era-subtitle">Páginas estáticas, GIFs e o começo de tudo</p>
+    <p class="era-body">
+      A primeira web era um vasto arquivo de páginas estáticas.
+      Usuários liam; não publicavam. HTML puro, tabelas para layout,
+      conexões de 56k e o icônico som do modem dial-up.
+      Empresas correram para a bolsa durante a bolha dot-com —
+      e logo a viu implodir em 2001.
+    </p>
+    <div style="margin-top: 36px; display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+      <span style="font-family: 'IBM Plex Mono'; font-size: 11px; padding: 6px 14px; border: 1px solid rgba(255,179,71,0.3); color: var(--amber-crt)">HTML 2.0</span>
+      <span style="font-family: 'IBM Plex Mono'; font-size: 11px; padding: 6px 14px; border: 1px solid rgba(255,179,71,0.15); color: rgba(255,179,71,0.5)">Dial-up 56k</span>
+      <span style="font-family: 'IBM Plex Mono'; font-size: 11px; padding: 6px 14px; border: 1px solid rgba(255,179,71,0.15); color: rgba(255,179,71,0.5)">Flash</span>
+      <span style="font-family: 'IBM Plex Mono'; font-size: 11px; padding: 6px 14px; border: 1px solid rgba(255,179,71,0.15); color: rgba(255,179,71,0.5)">Geocities</span>
+      <span style="font-family: 'IBM Plex Mono'; font-size: 11px; padding: 6px 14px; border: 1px solid rgba(255,179,71,0.15); color: rgba(255,179,71,0.5)">Internet Explorer</span>
+    </div>
+  </div>
+
+  <!-- Browser mockup -->
+  <div class="browser-mockup">
+    <div class="browser-chrome">
+      <div class="browser-btn" style="background: #ff5f57"></div>
+      <div class="browser-btn" style="background: #febc2e"></div>
+      <div class="browser-btn" style="background: #28c840"></div>
+      <div class="browser-url">http://www.geocities.com/minha_pagina/index.html</div>
+    </div>
+    <div class="browser-content" style="color: #ccc; background: #fff0d0; color: #000;">
+      <div class="brow-h1" style="color: #000080; font-family: 'IBM Plex Mono'">🌐 BEM VINDO À MINHA HOME PAGE!! 🌐</div>
+      <div class="brow-hr"></div>
+      <div style="display: flex; align-items: flex-start; gap: 8px; margin: 8px 0; font-size: 11px; font-family: 'IBM Plex Mono';">
+        <div class="brow-img-placeholder"></div>
+        <div>
+          <span style="font-weight: bold; color: #000080;">NOVIDADES</span><br>
+          Esta página está em construção!<br>
+          <span class="brow-link" style="font-family: 'IBM Plex Mono'">Clique aqui</span> para saber mais<br>
+          <span style="color: #ff0000; font-weight: bold">*** ATUALIZADO EM: 14/03/1999 ***</span>
+        </div>
+      </div>
+      <div class="brow-hr"></div>
+      <div style="font-size: 10px; color: #555; font-family: 'IBM Plex Mono'">
+        Visitantes: [contador] | Última visita: ontem<br>
+        <span class="brow-link">Email</span> | <span class="brow-link">Links</span> | <span class="brow-link">Fotos</span>
+      </div>
+      <div style="text-align: center; margin-top: 8px; font-size: 9px; color: #888; font-family: 'IBM Plex Mono'">
+        Melhor visto em: IE 4.0 / 800×600
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ERA 3: WEB 2.0 -->
+<section class="era-web2">
+  <span class="era-tag">ERA 03 // 2004–2015</span>
+  <h2 class="era-title" style="font-size: 48px; font-weight: 800; letter-spacing: -2px; margin-bottom: 12px;">Web 2.0 — <span style="color: var(--cyan-web2)">Participação</span></h2>
+  <p style="font-family: 'Cormorant Garamond'; font-style: italic; font-size: 22px; color: rgba(242,239,229,0.45); margin-bottom: 48px;">Redes sociais, conteúdo gerado pelo usuário e a era da participação</p>
+
+  <div class="era-web2-layout">
+    <div class="social-cards">
+      <div class="social-post">
+        <div class="social-header">
+          <div class="avatar">MZ</div>
+          <div>
+            <div class="post-name">Mark Z.</div>
+            <div class="post-time">Fev 2004</div>
+          </div>
+        </div>
+        <p class="post-text">Lançamos o thefacebook.com para estudantes de Harvard. Conecte-se com amigos do campus. 🎓</p>
+        <div class="post-actions">
+          <span class="post-action">♡ 12</span>
+          <span class="post-action">↩ Responder</span>
+          <span class="post-action">↗ Compartilhar</span>
+        </div>
+      </div>
+
+      <div class="social-post">
+        <div class="social-header">
+          <div class="avatar" style="background: rgba(255,179,71,0.1); border-color: rgba(255,179,71,0.3); color: var(--amber-crt)">YT</div>
+          <div>
+            <div class="post-name">YouTube</div>
+            <div class="post-time">Abril 2005</div>
+          </div>
+        </div>
+        <p class="post-text">Me at the zoo — primeiro vídeo carregado na plataforma. 19 segundos. 18 segundos depois: tudo mudou.</p>
+        <div class="post-actions">
+          <span class="post-action">▶ 270M views</span>
+          <span class="post-action">♡ 12M</span>
+        </div>
+      </div>
+
+      <div class="social-post">
+        <div class="social-header">
+          <div class="avatar" style="background: rgba(0,212,255,0.1); color: var(--cyan-web2)">TW</div>
+          <div>
+            <div class="post-name">Jack D.</div>
+            <div class="post-time">Mar 2006</div>
+          </div>
+        </div>
+        <p class="post-text">just setting up my twttr</p>
+        <div class="post-actions">
+          <span class="post-action">♡ 246K</span>
+          <span class="post-action">↩ 180K RT</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-pill">
+        <div class="fp-label">Mudança</div>
+        <div class="fp-title">User Generated Content</div>
+        <div class="fp-desc">Qualquer pessoa com conexão pode publicar para o mundo.</div>
+      </div>
+      <div class="feature-pill">
+        <div class="fp-label">Tecnologia</div>
+        <div class="fp-title">AJAX & APIs</div>
+        <div class="fp-desc">Páginas dinâmicas sem recarregar. A web vira uma plataforma.</div>
+      </div>
+      <div class="feature-pill">
+        <div class="fp-label">Negócio</div>
+        <div class="fp-title">Economia da Atenção</div>
+        <div class="fp-desc">Dados dos usuários viram o produto. O engajamento, a moeda.</div>
+      </div>
+      <div class="feature-pill">
+        <div class="fp-label">Revolução</div>
+        <div class="fp-title">Smartphone + 3G</div>
+        <div class="fp-desc">2007: iPhone. A internet sai do desktop e vai para o bolso.</div>
+      </div>
+      <div class="feature-pill" style="grid-column: 1 / -1;">
+        <div class="fp-label">Plataformas dominantes</div>
+        <div class="fp-title">Facebook · YouTube · Twitter · Wikipedia · Instagram</div>
+        <div class="fp-desc">As redes de 2004–2012 concentraram bilhões de usuários e redefiniriam democracia, mercado e identidade.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ERA 4: WEB 3.0 -->
+<section class="era-web3">
+  <div>
+    <span class="era-tag">ERA 04 // 2016–PRESENTE</span>
+    <h2 class="era-title" style="color: var(--violet-web3)">Web3, IA<br>& Além</h2>
+    <p class="era-subtitle">Descentralização, machine learning e a nova fronteira</p>
+    <p class="era-body">
+      Blockchain, contratos inteligentes, modelos de linguagem e
+      inteligência artificial generativa: a quarta era da internet
+      questiona quem controla dados, quem cria conteúdo — e o que
+      significa ser humano em rede.
+    </p>
+    <div style="margin-top: 36px;">
+      <div style="font-family: 'IBM Plex Mono'; font-size: 10px; letter-spacing: 3px; color: rgba(139,92,246,0.5); margin-bottom: 16px">// PILHA TECNOLÓGICA</div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="width: 80px; height: 4px; background: var(--violet-web3); border-radius: 2px;"></div>
+          <span style="font-family: 'IBM Plex Mono'; font-size: 11px; color: rgba(242,239,229,0.5)">Layer 3 — Aplicações IA</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="width: 60px; height: 4px; background: rgba(139,92,246,0.6); border-radius: 2px;"></div>
+          <span style="font-family: 'IBM Plex Mono'; font-size: 11px; color: rgba(242,239,229,0.5)">Layer 2 — Protocolos DeFi</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="width: 44px; height: 4px; background: rgba(139,92,246,0.35); border-radius: 2px;"></div>
+          <span style="font-family: 'IBM Plex Mono'; font-size: 11px; color: rgba(242,239,229,0.5)">Layer 1 — Blockchain Base</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Blockchain visual -->
+  <div>
+    <div style="font-family: 'IBM Plex Mono'; font-size: 10px; letter-spacing: 3px; color: rgba(139,92,246,0.5); margin-bottom: 24px">// CHAIN VISUALIZATION</div>
+    <div class="blockchain-visual">
+      <div class="block">
+        <div class="block-num">#4831</div>
+        <div class="block-data">
+          <div class="block-hash">0x7f4a...3c91</div>
+          <div class="block-info">1.842 transações · 2s atrás</div>
+        </div>
+        <div class="block-status"></div>
+      </div>
+      <div class="block-connector"></div>
+      <div class="block">
+        <div class="block-num">#4830</div>
+        <div class="block-data">
+          <div class="block-hash">0x2e19...8d44</div>
+          <div class="block-info">2.201 transações · 14s atrás</div>
+        </div>
+        <div class="block-status"></div>
+      </div>
+      <div class="block-connector"></div>
+      <div class="block">
+        <div class="block-num">#4829</div>
+        <div class="block-data">
+          <div class="block-hash">0xab03...1f72</div>
+          <div class="block-info">987 transações · 26s atrás</div>
+        </div>
+        <div class="block-status"></div>
+      </div>
+      <div class="block-connector"></div>
+      <div class="block" style="opacity: 0.45">
+        <div class="block-num">#4828</div>
+        <div class="block-data">
+          <div class="block-hash">0xc51e...09bb</div>
+          <div class="block-info">3.102 transações · confirmado</div>
+        </div>
+        <div class="block-status" style="background: rgba(16,185,129,0.3); box-shadow: none;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section class="quote-section">
+  <p class="quote-line">
+    "A internet é a maior experiência em anarquia que a humanidade já realizou."
+  </p>
+  <p class="quote-attribution">— Vint Cerf · Co-criador do TCP/IP · 1983</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    <div class="nav-logo">NETARCH</div>
+    <p>Um arquivo digital da evolução da internet — das origens militares à inteligência artificial generativa.</p>
+  </div>
+  <div>
+    <p class="footer-col-title">Eras</p>
+    <ul class="footer-links">
+      <li><a href="#">ARPANET & Origens (1969)</a></li>
+      <li><a href="#">Web 1.0 Read-Only (1991)</a></li>
+      <li><a href="#">Web 2.0 Social (2004)</a></li>
+      <li><a href="#">Web3 & IA (2016–)</a></li>
+    </ul>
+  </div>
+  <div>
+    <p class="footer-col-title">Recursos</p>
+    <ul class="footer-links">
+      <li><a href="#">Linha do Tempo Interativa</a></li>
+      <li><a href="#">Glossário Técnico</a></li>
+      <li><a href="#">Documentos Históricos</a></li>
+      <li><a href="#">Sobre o Projeto</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <p>© 2024 NETARCH — ARQUIVO DIGITAL</p>
+  <p>FEITO PARA FINS EDUCACIONAIS // CÓDIGO ABERTO</p>
+</div>
 
 </body>
-
-
-</html> 
+</html>
